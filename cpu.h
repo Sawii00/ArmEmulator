@@ -79,22 +79,22 @@ class cpu
         void compute_operands_data_processing(DWORD& first_operand, DWORD& second_operand, BYTE& carry_out);
 
         //data processing instructions
-        void handle_AND();
-        void handle_EOR();
-        void handle_SUB();
-        void handle_RSB();
-        void handle_ADD();
-        void handle_ADC();
-        void handle_SBC();
-        void handle_RSC();
-        void handle_TST();
-        void handle_TEQ();
-        void handle_CMP();
-        void handle_CMN();
-        void handle_ORR();
-        void handle_MOV();
-        void handle_BIC();
-        void handle_MVN();
+        void handle_AND(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_EOR(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_SUB(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_RSB(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_ADD(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_ADC(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_SBC(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_RSC(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_TST(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_TEQ(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_CMP(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_CMN(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_ORR(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_MOV(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_BIC(DWORD first_operand, DWORD second_operand, BYTE carry_out);
+        void handle_MVN(DWORD first_operand, DWORD second_operand, BYTE carry_out);
 
         void handle_001();
         void handle_010();

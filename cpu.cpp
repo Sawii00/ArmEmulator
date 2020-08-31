@@ -240,53 +240,57 @@ void handle_000()
 {
     DWORD opcode = extract(curr_instruction, 21, 4);
 
+    DWORD first_operand, second_operand;
+    BYTE carry_out;
+    compute_operands_data_processing(first_operand, second_operand, carry_out);
+
     switch(opcode)
     {
         case(AND):
             {
-                handle_AND();
+                handle_AND(first_operand, second_operand, carry_out);
                 break;
             }
 
         case(EOR):
             {
-                handle_EOR();
+                handle_EOR(first_operand, second_operand, carry_out);
                 break;
             }
 
         case(SUB):
             {
-                handle_SUB();
+                handle_SUB(first_operand, second_operand, carry_out);
                 break;
             }
 
         case(RSB):
             {
-                handle_RSB();
+                handle_RSB(first_operand, second_operand, carry_out);
                 break;
             }
 
         case(ADD):
             {
-                handle_ADD();
+                handle_ADD(first_operand, second_operand, carry_out);
                 break;
             }
 
         case(ADC):
             {
-                handle_ADC();
+                handle_ADC(first_operand, second_operand, carry_out);
                 break;
             }
 
         case(SBC):
             {
-                handle_SBC();
+                handle_SBC(first_operand, second_operand, carry_out);
                 break;
             }
 
         case(RSC):
             {
-                handle_RSC();
+                handle_RSC(first_operand, second_operand, carry_out);
                 break;
             }
 
@@ -295,7 +299,7 @@ void handle_000()
                 DWORD s_bit = extract(curr_instruction, 20, 1);
                 if(!s_bit)
                     handle_MISC();
-                handle_TST();
+                handle_TST(first_operand, second_operand, carry_out);
                 break;
             }
 
@@ -305,7 +309,7 @@ void handle_000()
                 if(!s_bit)
                     handle_MISC();
 
-                handle_TEQ();
+                handle_TEQ(first_operand, second_operand, carry_out);
                 break;
             }
 
@@ -314,7 +318,7 @@ void handle_000()
                 DWORD s_bit = extract(curr_instruction, 20, 1);
                 if(!s_bit)
                     handle_MISC();
-                handle_CMP();
+                handle_CMP(first_operand, second_operand, carry_out);
                 break;
             }
 
@@ -323,31 +327,31 @@ void handle_000()
                 DWORD s_bit = extract(curr_instruction, 20, 1);
                 if(!s_bit)
                     handle_MISC();
-                handle_CMN();
+                handle_CMN(first_operand, second_operand, carry_out);
                 break;
             }
 
         case(ORR):
             {
-                handle_ORR();
+                handle_ORR(first_operand, second_operand, carry_out);
                 break;
             }
 
         case(MOV):
             {
-                handle_MOV();
+                handle_MOV(first_operand, second_operand, carry_out);
                 break;
             }
 
         case(BIC):
             {
-                handle_BIC();
+                handle_BIC(first_operand, second_operand, carry_out);
                 break;
             }
 
         case(MVN):
             {
-                handle_MVN();
+                handle_MVN(first_operand, second_operand, carry_out);
                 break;
             }
 
@@ -769,16 +773,13 @@ void handle_EOR()
 
 }
 
-void handle_SUB()
+void handle_SUB(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 
     DWORD s_bit = extract(curr_instruction, 20, 1);
     DWORD dest_reg = extract(curr_instruction, 12, 4);
-    DWORD first_operand, second_operand;
-    BYTE carry_out;
 
-    compute_operands_data_processing(first_operand, second_operand, carry_out);
 
     SIGNED_QWORD res = (int)first_operand - second_operand;
 
@@ -813,67 +814,67 @@ void handle_SUB()
     }
 }
 
-void handle_RSB()
+void handle_RSB(DWORD first_operand, DWORD second_operand, BYTE carry_out)
+{
+    handle_SUB(second_operand, first_operand, carry_out);
+}
+
+void handle_ADD(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
 
-void handle_ADD()
+void handle_ADC(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
 
-void handle_ADC()
+void handle_SBC(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
 
-void handle_SBC()
+void handle_RSC(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
 
-void handle_RSC()
+void handle_TST(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
 
-void handle_TST()
+void handle_TEQ(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
 
-void handle_TEQ()
+void handle_CMP(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
 
-void handle_CMP()
+void handle_CMN(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
 
-void handle_CMN()
+void handle_ORR(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
 
-void handle_ORR()
+void handle_MOV(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
 
-void handle_MOV()
+void handle_BIC(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
 
-void handle_BIC()
-{
-
-}
-
-void handle_MVN()
+void handle_MVN(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
 }
