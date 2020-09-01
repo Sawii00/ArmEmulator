@@ -753,7 +753,7 @@ void handle_EOR()
 
     compute_operands_data_processing(first_operand, second_operand, carry_out);
 
-    DWORD res = first_operand | second_operand;
+    DWORD res = first_operand ^ second_operand;
 
     regs[dest_reg] = res;
 
@@ -819,9 +819,43 @@ void handle_RSB(DWORD first_operand, DWORD second_operand, BYTE carry_out)
     handle_SUB(second_operand, first_operand, carry_out);
 }
 
+//@TODO(sawii): confusion with carry and overflow... fix this shit
 void handle_ADD(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
+
+    DWORD s_bit = extract(curr_instruction, 20, 1);
+    DWORD dest_reg = extract(curr_instruction, 12, 4);
+
+
+    SIGNED_QWORD res = (int)first_operand + second_operand;
+
+    regs[dest_reg] = res;
+
+    if(s_bit)
+    {
+        if(dest_reg == 15)
+        {
+            //@TODO(sawii): modes
+        }
+        else
+        {
+            BYTE first_sign = extract(first_operand, 31, 1);
+            BYTE second_sign = extract(second_operand, 31, 1);
+
+            status.n = extract(res, 31, 1);            
+            status.z = res == 0 ? 1 : 0;
+            status.c = (u64)res > 0xFFFFFFFF ? 0 : 1;
+            if(first_sign == second_sign && first_sign != extract(res, 31, 1))
+            {
+                status.v = 1;
+            }
+            else
+            {
+                status.v = 0;
+            }
+        }
+    }
 }
 
 void handle_ADC(DWORD first_operand, DWORD second_operand, BYTE carry_out)
@@ -842,10 +876,33 @@ void handle_RSC(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 void handle_TST(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
+    DWORD first_operand, second_operand;
+    BYTE carry_out;
+
+    compute_operands_data_processing(first_operand, second_operand, carry_out);
+
+    DWORD res = first_operand & second_operand;
+
+    status.n = extract(res, 31, 1);            
+    status.z = res == 0 ? 1 : 0;
+    status.c = carry_out;
+
 }
 
 void handle_TEQ(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
+
+    DWORD first_operand, second_operand;
+    BYTE carry_out;
+
+    compute_operands_data_processing(first_operand, second_operand, carry_out);
+
+    DWORD res = first_operand | second_operand;
+
+    status.n = extract(res, 31, 1);            
+    status.z = res == 0 ? 1 : 0;
+    status.c = carry_out;
+
 
 }
 
@@ -861,6 +918,32 @@ void handle_CMN(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 
 void handle_ORR(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
+ 
+
+    DWORD s_bit = extract(curr_instruction, 20, 1);
+    DWORD dest_reg = extract(curr_instruction, 12, 4);
+    DWORD first_operand, second_operand;
+    BYTE carry_out;
+
+    compute_operands_data_processing(first_operand, second_operand, carry_out);
+
+    DWORD res = first_operand | second_operand;
+
+    regs[dest_reg] = res;
+
+    if(s_bit)
+    {
+        if(dest_reg == 15)
+        {
+            //@TODO(sawii): modes
+        }
+        else
+        {
+            status.n = extract(res, 31, 1);            
+            status.z = res == 0 ? 1 : 0;
+            status.c = carry_out;
+        }
+    }
 
 }
 
