@@ -713,15 +713,11 @@ void compute_operands_data_processing(DWORD& first_operand, DWORD& second_operan
 }
 
 
-void handle_AND()
+void handle_AND(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
     DWORD s_bit = extract(curr_instruction, 20, 1);
     DWORD dest_reg = extract(curr_instruction, 12, 4);
-    DWORD first_operand, second_operand;
-    BYTE carry_out;
-
-    compute_operands_data_processing(first_operand, second_operand, carry_out);
 
     DWORD res = first_operand & second_operand;
 
@@ -742,16 +738,12 @@ void handle_AND()
     }
 }
 
-void handle_EOR()
+void handle_EOR(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
     
 
     DWORD s_bit = extract(curr_instruction, 20, 1);
     DWORD dest_reg = extract(curr_instruction, 12, 4);
-    DWORD first_operand, second_operand;
-    BYTE carry_out;
-
-    compute_operands_data_processing(first_operand, second_operand, carry_out);
 
     DWORD res = first_operand ^ second_operand;
 
@@ -779,7 +771,6 @@ void handle_SUB(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 
     DWORD s_bit = extract(curr_instruction, 20, 1);
     DWORD dest_reg = extract(curr_instruction, 12, 4);
-
 
     SIGNED_QWORD res = (int)first_operand - second_operand;
 
@@ -876,11 +867,6 @@ void handle_RSC(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 void handle_TST(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
-    DWORD first_operand, second_operand;
-    BYTE carry_out;
-
-    compute_operands_data_processing(first_operand, second_operand, carry_out);
-
     DWORD res = first_operand & second_operand;
 
     status.n = extract(res, 31, 1);            
@@ -892,17 +878,11 @@ void handle_TST(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 void handle_TEQ(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
-    DWORD first_operand, second_operand;
-    BYTE carry_out;
-
-    compute_operands_data_processing(first_operand, second_operand, carry_out);
-
     DWORD res = first_operand | second_operand;
 
     status.n = extract(res, 31, 1);            
     status.z = res == 0 ? 1 : 0;
     status.c = carry_out;
-
 
 }
 
@@ -922,10 +902,6 @@ void handle_ORR(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 
     DWORD s_bit = extract(curr_instruction, 20, 1);
     DWORD dest_reg = extract(curr_instruction, 12, 4);
-    DWORD first_operand, second_operand;
-    BYTE carry_out;
-
-    compute_operands_data_processing(first_operand, second_operand, carry_out);
 
     DWORD res = first_operand | second_operand;
 
@@ -950,15 +926,70 @@ void handle_ORR(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 void handle_MOV(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
+    DWORD dest_reg = extract(curr_instruction, 12, 4);
+    BYTE s_bit = extract(curr_instruction, 20, 1);
+    regs[dest_reg] = second_operand;
+    
+    if(s_bit)
+    {
+        if(dest_reg == 15)
+        {
+            //@TODO(sawii): modes
+        }
+        else
+        {
+            status.n = extract(second_operand, 31, 1);            
+            status.z = second_operand == 0 ? 1 : 0;
+            status.c = carry_out;
+        }
+    }
+
+
 }
 
 void handle_BIC(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
 
+    DWORD dest_reg = extract(curr_instruction, 12, 4);
+
+    regs[dest_reg] = first_operand & ~second_operand;
+
+    if(s_bit)
+    {
+        if(dest_reg == 15)
+        {
+            //@TODO(sawii): modes
+        }
+        else
+        {
+            status.n = extract(second_operand, 31, 1);            
+            status.z = second_operand == 0 ? 1 : 0;
+            status.c = carry_out;
+        }
+    }
+
 }
 
 void handle_MVN(DWORD first_operand, DWORD second_operand, BYTE carry_out)
 {
+
+    DWORD dest_reg = extract(curr_instruction, 12, 4);
+    BYTE s_bit = extract(curr_instruction, 20, 1);
+    regs[dest_reg] = ~second_operand;
+    
+    if(s_bit)
+    {
+        if(dest_reg == 15)
+        {
+            //@TODO(sawii): modes
+        }
+        else
+        {
+            status.n = extract(second_operand, 31, 1);            
+            status.z = second_operand == 0 ? 1 : 0;
+            status.c = carry_out;
+        }
+    }
 
 }
 
